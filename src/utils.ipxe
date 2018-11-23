@@ -65,7 +65,7 @@ set util_file gparted-live-${gparted_version}-amd64.iso
 goto boot_memdisk
 
 :memtest-501
-set util_path boot.netboot.xyz/utils/memtest86-5.01.0
+set util_path boot.degree9.io/utils/memtest86-5.01.0
 set util_file memtest86-5.01.0
 goto boot_memtest
 

@@ -8,7 +8,7 @@ set fg_whi ${esc:string}[37m
 set version 0.01
 
 :start
-echo ${bold}${fg_cya}Degree9 Bootloader ${fg_whi}v${version}${boldoff}
+echo ${bold}${fg_cya}DEGREE9 PXE BOOTLOADER ${fg_whi}v${version}${boldoff}
 prompt --key f --timeout 4000 Hit the ${bold}f${boldoff} key to open failsafe menu... && goto failsafe || goto dhcp
 
 :dhcp
@@ -45,12 +45,12 @@ goto menu || goto failsafe
 echo Booting from HTTPS...
 set conn_type https
 set ERR_HTTPS Booting via HTTPS has failed...
-chain --autofree https://boot.netboot.xyz/menu.ipxe || echo ${ERR_HTTPS}
+chain --autofree https://boot.degree9.io/menu.ipxe || echo ${ERR_HTTPS}
 sleep 2
 echo Booting from HTTP...
 set conn_type http
 set ERR_HTTP Booting via HTTP has failed...
-chain --autofree http://boot.netboot.xyz/menu.ipxe || echo ${ERR_HTTP}
+chain --autofree http://boot.degree9.io/menu.ipxe || echo ${ERR_HTTP}
 goto localboot
 
 :localboot
