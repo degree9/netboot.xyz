@@ -1,6 +1,9 @@
+#define CONSOLE_CMD           /* Console command */
+#define CONSOLE_FRAMEBUFFER   /* Graphical framebuffer console */
 #define DIGEST_CMD            /* Image crypto digest commands */
-#define DOWNLOAD_PROTO_HTTPS  /* Secure Hypertext Transfer Protocol */      
+#define DOWNLOAD_PROTO_HTTPS  /* Secure Hypertext Transfer Protocol */
 #define IMAGE_COMBOOT         /* COMBOOT */
+#define IMAGE_PNG             /* PNG images */
 #define IMAGE_TRUST_CMD	      /* Image trust management commands */
 #define NET_PROTO_IPV6        /* IPv6 protocol */
 #define NSLOOKUP_CMD          /* DNS resolving command */

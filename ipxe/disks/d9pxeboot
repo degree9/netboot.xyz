@@ -9,22 +9,35 @@ set version 0.01
 
 :start
 echo ${bold}${fg_cya}DEGREE9 PXE BOOTLOADER ${fg_whi}v${version}${boldoff}
-prompt --key f --timeout 4000 Hit the ${bold}f${boldoff} key to open failsafe menu... && goto failsafe || goto dhcp
+prompt --key 0x1b --timeout 5000 Launching D9 AUTOBOOT, press ${bold}esc${boldoff} to abort... && goto main || goto autoboot
 
-:dhcp
-echo
-dhcp || goto netconfig
-goto menu
+:autoboot
+prompt --key f --timeout 5000 Press ${bold}f${boldoff} for failsafe... && goto failsafe || console --x 1024 --y 768 --picture https://cdn-images-1.medium.com/max/2000/1*lDe58GEhrklob0TXmQ3KkQ.png
+dhcp || goto main
+
+:main
+menu Degree9 Boot Menu
+item local Load local config (USB)
+item remote Load remote config (HTTP/HTTPS)
+item dhcp Configure network automatically (DHCP)
+item netconfig Configure network manually (Static)
+item localboot Hardware boot sequence (BIOS/EFI)
+choose --default local select-menu && goto ${select-menu} || goto error
 
 :failsafe
 menu Degree9 Failsafe Menu
-item localboot Boot to local drive
+item localboot Continue hardware boot sequence
 item netconfig Manual network configuration
-item retry Retry boot
-item debug iPXE Debug Shell
+item retry Reload D9 Bootloader
+item debug D9 Boot Shell (debug)
 item reboot Reboot System
-choose failsafe_choice || exit
+choose --default retry failsafe_choice || goto error
 goto ${failsafe_choice}
+
+:dhcp
+echo Configuring network using DHCP...
+dhcp || goto netconfig
+goto main
 
 :netconfig
 echo Network Configuration:
@@ -45,28 +58,33 @@ goto menu || goto failsafe
 echo Booting from HTTPS...
 set conn_type https
 set ERR_HTTPS Booting via HTTPS has failed...
-chain --autofree https://boot.degree9.io/menu.ipxe || echo ${ERR_HTTPS}
+chain --autofree https://boot.degree9.io/ || echo ${ERR_HTTPS}
 sleep 2
 echo Booting from HTTP...
 set conn_type http
 set ERR_HTTP Booting via HTTP has failed...
-chain --autofree http://boot.degree9.io/menu.ipxe || echo ${ERR_HTTP}
-goto localboot
+chain --autofree http://boot.degree9.io/ || echo ${ERR_HTTP}
+goto retry
 
 :localboot
 echo Continuing hardware boot sequence...
 exit
 
 :retry
+console
 goto start
 
 :reboot
 echo Rebooting...
 reboot
-goto start
 
 :debug
-echo DEGREE9 PXE SHELL
-echo Type "exit" to return to menu
+console
+echo ${bold}${fg_cya}DEGREE9 BOOT SHELL ${fg_whi}v${version}${boldoff}
+echo Type "exit" to return to menu...
 shell
 goto failsafe
+
+:error
+echo An unexpected error occurred...
+goto retry
